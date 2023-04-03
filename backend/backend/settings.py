@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv()
-SECRET_KEY = os.getenv('SECRET_KEY', 'top_secret')
+SECRET_KEY = os.getenv('SECRET_KEY', default='jnz$onqz-5jf-lb+xmh%wh)rrkh^iy*ybib2%om1u%(vmw=gyk')
 
 DEBUG = False
 
