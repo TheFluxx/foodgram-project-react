@@ -64,7 +64,6 @@ jobs:
           script: |
             cd infra/
             sudo docker-compose stop
-            sudo docker-compose rm Django
             touch .env
             echo SECRET_KEY="${{ secrets.SECRET_KEY }}" >> .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
