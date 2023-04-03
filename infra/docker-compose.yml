@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   frontend:
-    image: thefluxx/foodgram_frontend:v1
+    image: thefluxx/foodgram_frontend:v2
     volumes:
       - frontend_value:/app/result_build/
   PostgreSQL:
@@ -12,7 +12,7 @@ services:
     env_file:
       - ./.env
   Django:
-    image: thefluxx/foodgram_backend:v1
+    image: thefluxx/foodgram_backend:v2
     restart: always
     volumes:
       - static_value:/app/static/
