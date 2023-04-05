@@ -42,7 +42,7 @@ jobs:
         with:
           push: true
           context: ./backend/foodgram/
-          tags: thefluxx/backend:latest
+          tags: thefluxx/backend:v1
 
   deploy:
     runs-on: ubuntu-latest
