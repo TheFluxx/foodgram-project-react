@@ -7,7 +7,7 @@ from .models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
 
 class IngredientsInLine(admin.TabularInline):
     model = Recipe.ingredients.through
-
+    min_num = 1
 
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):

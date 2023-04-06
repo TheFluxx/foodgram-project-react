@@ -160,30 +160,34 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         ingredients = self.initial_data.get('ingredients')
-        list = []
-        for i in ingredients:
-            amount = i['amount']
+        catalogue = set()
+        for ingredient in ingredients:
+            amount = ingredient['amount']
             if int(amount) < 1:
                 raise serializers.ValidationError({
                    'amount': 'Количество ингредиента должно быть больше 0!'
                 })
-            if i['id'] in list:
+            if int(amount) > 50:
+                raise serializers.ValidationError({
+                   'amount': 'Количество ингредиентов должно быть меньше 50!'
+                })
+            if ingredient['id'] in catalogue:
                 raise serializers.ValidationError({
                    'ingredient': 'Ингредиенты должны быть уникальными!'
                 })
-            list.append(i['id'])
+            catalogue.append(ingredient['id'])
         return data
 
     def create_ingredients(self, ingredients, recipe):
-        for i in ingredients:
-            ingredient = Ingredient.objects.get(id=i['id'])
-            RecipeIngredient.objects.create(
-                ingredient=ingredient, recipe=recipe, amount=i['amount']
+        for ingredient in ingredients:
+            ingredient_get = Ingredient.objects.get(id=ingredient['id'])
+            RecipeIngredient.objects.bulk_create(
+                ingredient=ingredient_get, recipe=recipe, amount=ingredient['amount']
             )
 
     def create_tags(self, tags, recipe):
         for tag in tags:
-            RecipeTag.objects.create(recipe=recipe, tag=tag)
+            RecipeTag.objects.bulk_create(recipe=recipe, tag=tag)
 
     def create(self, validated_data):
         """

@@ -36,15 +36,15 @@ class SubscribeView(APIView):
             data=data,
             context={'request': request}
         )
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete(self, request, id):
         author = get_object_or_404(User, id=id)
-        if Subscription.objects.filter(
-           user=request.user, author=author).exists():
+        subscription_filter = Subscription.objects.filter(
+           user=request.user, author=author)
+        if subscription_filter.exists():
             subscription = get_object_or_404(
                 Subscription, user=request.user, author=author
             )
@@ -85,17 +85,16 @@ class FavoriteView(APIView):
             serializer = FavoriteSerializer(
                 data=data, context={'request': request}
             )
-            if serializer.is_valid():
-                serializer.save()
-                return Response(
-                    serializer.data, status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(
+                serializer.data, status=status.HTTP_201_CREATED)
 
     def delete(self, request, id):
         recipe = get_object_or_404(Recipe, id=id)
-        if Favorite.objects.filter(
-           user=request.user, recipe=recipe).exists():
-            Favorite.objects.filter(user=request.user, recipe=recipe).delete()
+        favorite_filter = Favorite.objects.filter(user=request.user, recipe=recipe)
+        if favorite_filter.exists():
+            favorite_filter.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -156,19 +155,16 @@ class ShoppingCartView(APIView):
             serializer = ShoppingCartSerializer(
                 data=data, context={'request': request}
             )
-            if serializer.is_valid():
-                serializer.save()
-                return Response(
-                    serializer.data, status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete(self, request, id):
         recipe = get_object_or_404(Recipe, id=id)
-        if ShoppingCart.objects.filter(
-           user=request.user, recipe=recipe).exists():
-            ShoppingCart.objects.filter(
-                user=request.user, recipe=recipe
-            ).delete()
+        shopping_filter = ShoppingCart.objects.filter(
+           user=request.user, recipe=recipe)
+        if shopping_filter.exists():
+            shopping_filter.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 

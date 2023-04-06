@@ -42,6 +42,7 @@ class Subscription(models.Model):
     )
 
     class Meta:
+        ordering = ['user']
         constraints = [
             UniqueConstraint(
                 fields=['user', 'author'],

@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models import UniqueConstraint
 
@@ -76,6 +76,8 @@ class Recipe(models.Model):
         verbose_name='Время приготовления',
         validators=[MinValueValidator(
             1, message='Время приготовления должно быть не менее 1 минуты!'
+        ), MaxValueValidator(
+            1440, message='Время приготовления должно быть не более 1 дня!'
         )]
     )
     pub_date = models.DateTimeField(
@@ -105,12 +107,13 @@ class RecipeIngredient(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Ингредиент'
     )
-    amount = models.IntegerField(
+    amount = models.PositiveIntegerField(
         'Количество',
-        validators=[MinValueValidator(1)]
+        validators=[MinValueValidator(1), MaxValueValidator(1440)]
     )
 
     class Meta:
+        ordering = ['recipe']
         constraints = [
             UniqueConstraint(
                 fields=['recipe', 'ingredient'],
@@ -134,6 +137,7 @@ class RecipeTag(models.Model):
     )
 
     class Meta:
+        ordering = ['recipe']
         constraints = [
             UniqueConstraint(
                 fields=['recipe', 'tag'],
@@ -159,6 +163,7 @@ class ShoppingCart(models.Model):
     )
 
     class Meta:
+        ordering = ['user']
         constraints = [
             UniqueConstraint(
                 fields=['user', 'recipe'],
@@ -184,6 +189,7 @@ class Favorite(models.Model):
     )
 
     class Meta:
+        ordering = ['user']
         constraints = [
             UniqueConstraint(
                 fields=['user', 'recipe'],
