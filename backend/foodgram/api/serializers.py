@@ -6,7 +6,7 @@ from rest_framework.validators import UniqueTogetherValidator
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             RecipeTag, ShoppingCart, Tag)
 from users.models import Subscription, User
-from foodgram.settings import INGREDIENTS_NUM
+from foodgram.settings import INGREDIENT_QUANTITY
 
 class CustomUserCreateSerializer(UserCreateSerializer):
     """ Сериализатор создания пользователя. """
@@ -167,7 +167,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({
                    'amount': 'Количество ингредиента должно быть больше 0г!'
                 })
-            if int(amount) > INGREDIENTS_QUANTITY:
+            if int(amount) > INGREDIENT_QUANTITY:
                 raise serializers.ValidationError({
                    'amount': 'Количество ингредиента должно быть меньше 10кг!'
                 })
