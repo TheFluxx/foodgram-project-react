@@ -6,7 +6,7 @@ from rest_framework.validators import UniqueTogetherValidator
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             RecipeTag, ShoppingCart, Tag)
 from users.models import Subscription, User
-
+from foodgram.settings import INGREDIENTS_NUM
 
 class CustomUserCreateSerializer(UserCreateSerializer):
     """ Сериализатор создания пользователя. """
@@ -167,9 +167,9 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({
                    'amount': 'Количество ингредиента должно быть больше 0!'
                 })
-            if int(amount) > 50:
+            if int(amount) > INGREDIENTS_NUM:
                 raise serializers.ValidationError({
-                   'amount': 'Количество ингредиентов должно быть меньше 50!'
+                   'amount': 'Количество ингредиентов должно быть меньше 100!'
                 })
             if ingredient['id'] in catalogue:
                 raise serializers.ValidationError({
@@ -179,15 +179,24 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         return data
 
     def create_ingredients(self, ingredients, recipe):
+        ingredient_list = []
         for ingredient in ingredients:
-            ingredient_get = Ingredient.objects.get(id=ingredient['id'])
-            RecipeIngredient.objects.bulk_create(
-                ingredient=ingredient_get, recipe=recipe, amount=ingredient['amount']
+            ingredient_list.append(
+                RecipeIngredient(
+                    ingredient=Ingredient.objects.get(id=ingredient['id']),
+                    amount=ingredient['amount'],
+                    recipe=recipe,
+                )
             )
+        RecipeIngredient.objects.bulk_create(ingredient_list)
 
     def create_tags(self, tags, recipe):
+        tag_list = []
         for tag in tags:
-            RecipeTag.objects.bulk_create(recipe=recipe, tag=tag)
+            tag_list.append(
+                RecipeTag(tag=tag, recipe=recipe)
+            )
+        RecipeTag.objects.bulk_create(tag_list)
 
     def create(self, validated_data):
         """
