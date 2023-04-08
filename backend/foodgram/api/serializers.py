@@ -160,16 +160,12 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         ingredients = self.initial_data.get('ingredients')
-        catalogue = set()
+        catalogue = []
         for ingredient in ingredients:
             amount = ingredient['amount']
             if int(amount) < 1:
                 raise serializers.ValidationError({
                    'amount': 'Количество ингредиента должно быть больше 0г!'
-                })
-            if int(amount) > INGREDIENT_QUANTITY:
-                raise serializers.ValidationError({
-                   'amount': 'Количество ингредиента должно быть меньше 10кг!'
                 })
             if ingredient['id'] in catalogue:
                 raise serializers.ValidationError({
