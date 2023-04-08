@@ -165,11 +165,11 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             amount = ingredient['amount']
             if int(amount) < 1:
                 raise serializers.ValidationError({
-                   'amount': 'Количество ингредиента должно быть больше 0!'
+                   'amount': 'Количество ингредиента должно быть больше 0г!'
                 })
-            if int(amount) > INGREDIENTS_NUM:
+            if int(amount) > INGREDIENTS_QUANTITY:
                 raise serializers.ValidationError({
-                   'amount': 'Количество ингредиентов должно быть меньше 100!'
+                   'amount': 'Количество ингредиента должно быть меньше 10кг!'
                 })
             if ingredient['id'] in catalogue:
                 raise serializers.ValidationError({
